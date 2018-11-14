@@ -1,0 +1,161 @@
+PROGRAMME conversionChiffreRomain
+
+//BUT Programme qui réalise des conversions entre les chiffres romains et les chiffres décimaux
+//ENTREE L'Entier correspondant au choix du menu, et l'entier correspondant au nombre decimal ou la chaine correspondant au nombre romain.
+//SORTIE L'Entier convertit ou la chaine convertit
+
+    //Sous Programme décimal vers romains
+//*****************************************************************************************************//
+//
+// DESCRIPTION Procedure qui demande à un utilisateur le nombre décimal à convertir en nombre romain, et réalise la conversion.
+//
+// ENTREE   Un entier
+//
+// SORTIE   Une chaine de caractère correspondant à l'écriture en chiffre romain de l'entier en entrée
+//
+// NOTE (Attend un entier en paramètre entre 1 et 3999).
+//
+//*****************************************************************************************************//
+PROCEDURE pcdDecimalVersRomain()
+CONST
+    TAILLE_TABLEAU = 7
+VAR 
+    TabVal : TABLEAU [1..TAILLE_TABLEAU] DE ENTIER
+    TabCorrespondances : TABLEAU [1..TAILLE_TABLEAU] DE CARACTERE
+    strRomain : CHAINE
+    nbDecimal : ENTIER
+    nbDecimalTraitement : ENTIER
+    Compteur : ENTIER
+    MemCompteur : ENTIER
+DEBUT
+    //initialisation des variables
+    strRomain <- ""
+    TabVal <- {1,5,10,50,100,500,1000}
+    TabCorrespondances <- {'I','V','X','L','C','D','M'}
+    Compteur <- 0
+    MemCompteur <- 1
+    nbDecimal <- 0
+    
+
+    //ENTREE
+    ECRIRE ("Entrez le nombre décimal à convertir en chiffre Romain :")
+    LIRE (nbDecimal)
+
+    //TRAITEMENT
+
+    //initialisation du compteur
+    Compteur <- TAILLE_TABLEAU
+    nbDecimalTraitement <- nbDecimal
+    REPETER
+        SI((nbDecimalTraitement /(TabVal[Compteur]))>0)ALORS
+            strRomain <- strRomain & TabCorrespondances[Compteur]
+            nbDecimalTraitement <- nbDecimalTraitement- TabVal[nCompteur]
+        SINON
+            SI((Compteur MOD 2)==1) ALORS
+                MemCompteur= Compteur-2
+            SINON
+                MemCompteur= Compteur-1
+                SI((nbDecimalTraitement) >= (TabVal[Compteur]-TabVal[MemCompteur])) ALORS
+                    strRomain <- strRomain & TabCorrespondances[MemCompteur] & TabCorrespondances[Compteur]
+                    nbDecimalTraitement = nbDecimalTraitement + TabVal[MemCompteur] - TabVal[Compteur]
+                SINON
+                    Compteur <- Compteur - 1    //decrémentation du compteur, l'analyse des nombre se fait du plus grand au plus petit
+                FINSI
+            FINSI
+        FINSI
+
+    JUSQU'A (nDecimalTraitement <= 0)
+    //AFFICHAGE
+    ECRIRE ("Le nombre romain correspondant à ",nbDecimal," est ",strRomain,".")
+
+FINFONCTION
+
+//*****************************************************************************************************//
+//
+// DESCRIPTION Procedure qui demande à un utilisateur le nombre romain à convertir en nombre décimal, et réalise la conversion.
+//
+// ENTREE   Une chaine de caractère correspondant au chiffre romain.
+//
+// SORTIE   Un nombre qui correspond 
+//
+// NOTE (Le programme renvoie la valeur de 0 si la chaine entrée ne contient aucun carractère).
+//
+//*****************************************************************************************************//
+PROCEDURE pcdRomainVersDecimal()
+CONST
+    TAILLE_TABLEAU <- 7 : ENTIER
+VAR 
+    strRomain : CHAINE
+    mesVal : TABLEAU [1..TAILLE_TABLEAU] DE ENTIER
+    mesCorrespondances : TABLEAU [1..TAILLE_TABLEAU] DE CARACTERE
+    Compteur : ENTIER
+    Index : ENTIER
+    nbDecimal : ENTIER
+    IndexPrecedent : ENTIER
+DEBUT
+    //initialisation des variables
+    strRomain <- ""
+    mesVal <- {1,5,10,50,100,500,1000}
+    mesCorrespondances <- {'I','V','X','L','C','D','M'}
+    Compteur <- 1
+    Index <- TAILLE_TABLEAU
+    nbDecimal <- 0
+    IndexPrecedent <- Index //initialisation de l'index précedent avec une valeur égale à l'index importante pour le 1er caractère de la chaine
+
+    //ENTREE
+    ECRIRE ("Quel est le nombre romain à traduire en decimal ?")
+    LIRE (strRomain)
+
+    //TRAITEMENT
+
+    //tantque pour éviter que le programme ne crash en cas d'entrée vide
+    TANTQUE (Compteur <= LONGUEUR(strRomain) ET (Index >0)) FAIRE       // Index>0 pour sortir de la procedure si la chaine contient un caracter invalide  
+        SI mesCorrespondances[Index] = strRomain[Compteur] ALORS
+            SI IndexPrecedent<Index ALORS
+                nbDecimal <- nbDecimal + mesVal[Index] - (2* mesVal[IndexPrecedent])
+            SINON
+                nbDecimal <- nbDecimal + mesVal[Index]
+            FINSI
+            IndexPrecedent <- Index    //sauvegarde de la valeur de l'index dans IndexPrecedent
+            Compteur <- Compteur +1 // la lettre suivante est testé
+            Index <- TAILLE_TABLEAU  //l'index repart du début
+        SINON
+            Index <- Index -1
+        FINSI
+    FINTANTQUE
+
+    //AFFICHAGE ECRIRE ("Le nombre ",strRomain," vaut : ",nbDecimal," en nombre decimal." )
+
+    
+
+
+FINFONCTION
+
+    //PROGRAMME PRINCIPAL
+/*****************************************************************************************************//
+//
+// DESCRIPTION: Contient la boucle de saisie et le menu qui permet à l'utilisateur d'appeler les procédures de conversion Romain vers Decimal
+//      et Décimal vers Romain. Permet aussi de quitter.
+//
+// ENTREE   Un entier correspondant au choix du menu.
+//
+// SORTIE
+//
+// NOTE (Le programme se répète tant que l'utilisateur ne saisie pas 0 pour quitter le programme.)
+//
+//*****************************************************************************************************//
+VAR
+    nbSaisie : ENTIER
+DEBUT
+    
+    REPETER
+        ECRIRE ("Programme Romain\n 1 : Convertion decimal vers Romain \n 2: Convertion Romain vers decimal \n 0: Pour Quitter \n")     // \n signie retour à la ligne
+        CAS nbSaisie PARMI
+        CAS 1: pcdDecimalVersRomain()
+        CAS 2: pcdRomainVersDecimal()
+        FINCASPARMI
+        
+
+    JUSQU'A (nbSaisie=0);
+
+FIN
